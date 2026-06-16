@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leofame Clone - Premium Growth Engine</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0a051b;
+            --card-bg: rgba(25, 18, 52, 0.65);
+            --accent-primary: #8a2be2;
+            --accent-glow: #00f2fe;
+            --text-main: #ffffff;
+            --text-muted: #a29bfe;
+            --success: #00e676;
+            --warning: #ffea00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- HIGH PERFORMANCE AMBIENT VIDEO/DYNAMIC BACKGROUND --- */
+        .video-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f0c20 0%, #151035 50%, #060411 100%);
+        }
+
+        /* Ambient moving nodes acting like premium compression abstract video loops */
+        .video-bg-container::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background: radial-gradient(circle, rgba(138,43,226,0.15) 0%, transparent 60%),
+                        radial-gradient(circle, rgba(0,242,254,0.1) 0%, transparent 50%);
+            animation: backgroundFlow 25s infinite linear;
+        }
+
+        @keyframes backgroundFlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* HTML5 Real Video Integration Placeholder styles */
+        .real-video-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.15; /* Keeps text contrast high */
+            z-index: -1;
+        }
+
+        .overlay-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10,5,27,0.3), rgba(10,5,27,0.85));
+            z-index: -1;
+        }
+
+        /* --- GLOBAL NAVIGATION HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(10, 5, 27, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, var(--accent-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        select.lang-switcher {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none;
+            font-weight: 600;
+        }
+
+        select.lang-switcher option {
+            background: #151035;
+            color: #fff;
+        }
+
+        .btn-role {
+            background: transparent;
+            border: 1px solid var(--accent-glow);
+            color: var(--accent-glow);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-role:hover {
+            background: var(--accent-glow);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- LAYOUT WRAPPERS & VIEWS --- */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- AUTH ENTICATION INTERFACE --- */
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .auth-card h2 {
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 8px rgba(138,43,226,0.3);
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, var(--accent-primary), #6c5ce7);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(138,43,226,0.4);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        .auth-toggle-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .auth-toggle-link span {
+            color: var(--accent-glow);
+            text-decoration: underline;
+        }
+
+        /* --- USER MAIN ORDER TERMINAL --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .system-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .system-card h3 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        /* 1K rule verification badge rules */
+        .tier-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .badge-restricted {
+            background: rgba(255, 234, 0, 0.15);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .badge-unlimited {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .service-selectors {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .service-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 5px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .service-btn i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .service-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 10px rgba(138,43,226,0.5);
+        }
+
+        .status-msg {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-glow);
+        }
+
+        /* --- ADMIN COMMAND PANEL STYLES --- */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-glow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        th {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+        }
+
+        .badge-table {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- VIDEO BACKGROUND ELEMENT LOOP -->
+    <div class="video-bg-container">
+        <!-- Pro-tip: Replace the src below with your production server mp4 asset -->
+        <video class="real-video-bg" autoplay loop muted playsinline>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-32155-large.mp4" type="video/mp4">
+        </video>
+        <div class="overlay-mask"></div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header>
+        <div class="logo"><i class="fa-solid fa-bolt"></i> LEOFAME PRO</div>
+        <div class="nav-controls">
+            <!-- Language Switcher Core -->
+            <select class="lang-switcher" id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="es">Español</option>
+            </select>
+            <button class="btn-role" id="roleToggleBtn" onclick="toggleRoleView()">Switch to Admin</button>
+            <button class="btn-role" id="logoutBtn" style="display:none; border-color: #ff3333; color: #ff3333;" onclick="logoutUser()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- VIEW 1: AUTHENTICATION FORM PANEL -->
+        <div id="authView" class="view-panel active">
+            <div class="auth-card">
+                <h2 id="authTitle">Sign In</h2>
+                <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                    <div class="form-group">
+                        <label id="lblUser">Username</label>
+                        <input type="text" id="authUsername" required placeholder="Enter username">
+                    </div>
+                    <div class="form-group" id="emailGroup" style="display: none;">
+                        <label id="lblEmail">Email Address</label>
+                        <input type="email" id="authEmail" placeholder="name@domain.com">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblPass">Password</label>
+                        <input type="password" id="authPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="primary-btn" id="btnSubmitAuth">Login</button>
+                </form>
+                <div class="auth-toggle-link" id="authToggleText" onclick="toggleAuthFormMode()">
+                    Don't have an account? <span>Sign Up</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: CLIENT ORDER INTERFACE -->
+        <div id="clientView" class="view-panel">
+            <div class="dashboard-grid">
+                
+                <!-- Place New Order Engine Card -->
+                <div class="system-card">
+                    <span id="tierBadge" class="tier-badge badge-restricted">First Order: Locked Tier</span>
+                    <h3 id="panelOrderTitle">Configure Growth Order</h3>
+                    
+                    <div class="status-msg" id="limitMessage">
+                        Welcome offer! Your very first setup is strictly calibrated to exactly 1,000 counts to test our real-time synchronization.
+                    </div>
+
+                    <div class="form-group">
+                        <label id="lblSelectService">1. Select Target KPI Channel</label>
+                        <div class="service-selectors">
+                            <div class="service-btn active" onclick="setServiceType('views', this)">
+                                <i class="fa-solid fa-eye"></i><span class="srv-txt">Views</span>
+                            </div>
+                            <div class="service-btn" onclick="setServiceType('likes', this)">
+                                <i class="fa-solid fa-heart"></i><span class="srv-txt">Likes</span>
+                            </div>
+                            <div class="service-btn" onclick="setServiceType('shares', this)">
+                                <i class="fa-solid fa-share"></i><span class="srv-txt">Shares</span>
+                            </div>
+                            <div class="service-btn" onclick="setServiceType('saves', this)">
+                                <i class="fa-solid fa-bookmark"></i><span class="srv-txt">Saved</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handleCreateOrder(event)">
+                        <div class="form-group">
+                            <label id="lblTargetUrl">2. Target Link / URL</label>
+                            <input type="url" id="targetUrl" required placeholder="https://instagram.com/p/... or youtube link">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label id="lblQuantity">3. Metric Quantity</label>
+                            <input type="number" id="orderQuantity" readonly value="1000">
+                        </div>
+
+                        <button type="submit" class="primary-btn" id="btnPlaceOrder">Deploy Infrastructure Vector</button>
+                    </form>
+                </div>
+
+                <!-- Live Client Metrics History Card -->
+                <div class="system-card">
+                    <h3 id="panelHistoryTitle">Your Operational Logs</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th id="thService">Service</th>
+                                    <th id="thQty">Volume</th>
+                                    <th id="thTarget">Target URL</th>
+                                    <th id="thStatus">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientOrderHistoryTable">
+                                <!-- Dynamic Injection via Engine -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- VIEW 3: SYSTEM ADMINISTRATIVE HEADQUARTERS -->
+        <div id="adminView" class="view-panel">
+            <div class="system-card">
+                <div class="admin-header">
+                    <h2>Global Analytics & Admin Overrides</h2>
+                    <button class="btn-role" style="border-color: var(--warning); color:var(--warning)" onclick="resetGlobalMockData()">Reset Database State</button>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-box">
+                        <label>Active Database Nodes</label>
+                        <span id="statUsers">1</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Total Global Dispatches</label>
+                        <span id="statOrders">3</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Platform Processing Mode</label>
+                        <span style="font-size:18px; color:var(--success)">AUTO-RELIANT</span>
+                    </div>
+                </div>
+
+                <h3>Live Enterprise Ledger Accounts</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Account</th>
+                                <th>Service Strategy</th>
+                                <th>Volume Allocated</th>
+                                <th>Target Route</th>
+                                <th>System Signature</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminGlobalTable">
+                            <!-- Dynamic Injection via Engine -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- APPLICATION CONTROL INFRASTRUCTURE (JAVASCRIPT) -->
+    <script>
+        // --- 1. LOCAL DICTIONARIES AND DATA STATE MOCK ---
+        const dictionary = {
+            en: {
+                authTitleIn: "Sign In", authTitleUp: "Create Enterprise Account",
+                lblUser: "Username", lblEmail: "Email Address", lblPass: "Password",
+                btnLogin: "Login Account", btnSignup: "Register Now",
+                toggleToUp: "Don't have an account? Sign Up", toggleToIn: "Already verified? Login",
+                badgeRestricted: "First Order: Locked Tier (1K Limit)", badgeUnlimited: "Premium Status: Unlimited Enabled",
+                msgFirst: "Welcome offer! Your very first setup is strictly calibrated to exactly 1,000 counts to test our real-time synchronization.",
+                msgPremium: "Premium account configuration unlocked. You can now request unlimited scaling streams.",
+                lblService: "1. Select Target KPI Channel", lblTarget: "2. Target Link / URL", lblQty: "3. Metric Quantity",
+                btnDeploy: "Deploy Growth Vector", panelHistory: "Your Operational Logs", panelOrder: "Configure Growth Order",
+                thSrv: "Service", thVol: "Volume", thTgt: "Target URL", thStat: "Status"
+            },
+            hi: {
+                authTitleIn: "लॉगिन करें", authTitleUp: "नया अकाउंट बनाएं",
+                lblUser: "यूजरनेम", lblEmail: "ईमेल एड्रेस", lblPass: "पासवर्ड",
+                btnLogin: "अकाउंट लॉगिन करें", btnSignup: "अभी रजिस्टर करें",
+                toggleToUp: "अकाउंट नहीं है? साइन अप करें", toggleToIn: "अकाउंट है? लॉगिन करें",
+                badgeRestricted: "पहला ऑर्डर: 1K सीमित मोड", badgeUnlimited: "प्रीमियम स्थिति: असीमित मोड सक्रिय",
+                msgFirst: "स्वागत ऑफर! वास्तविक समय सिंक्रनाइज़ेशन का परीक्षण करने के लिए आपका पहला ऑर्डर ठीक 1,000 तक सीमित है।",
+                msgPremium: "प्रीमियम अकाउंट अनलॉक हो गया है। अब आप असीमित मात्रा में ऑर्डर जनरेट कर सकते हैं।",
+                lblService: "1. चैनल प्रकार चुनें", lblTarget: "2. टारगेट लिंक / URL", lblQty: "3. मात्रा",
+                btnDeploy: "ऑर्डर सबमिट करें", panelHistory: "आपके ऑर्डर लॉग्स", panelOrder: "ऑर्डर कॉन्फ़िगर करें",
+                thSrv: "सर्विस", thVol: "मात्रा", thTgt: "लिंक", thStat: "स्थिति"
+            },
+            es: {
+                authTitleIn: "Iniciar Sesión", authTitleUp: "Crear Cuenta",
+                lblUser: "Usuario", lblEmail: "Correo Electrónico", lblPass: "Contraseña",
+                btnLogin: "Ingresar", btnSignup: "Registrarse Ahora",
+                toggleToUp: "¿No tienes cuenta? Regístrate", toggleToIn: "¿Ya tienes cuenta? Conéctate",
+                badgeRestricted: "Primer Pedido: Bloqueado a 1K", badgeUnlimited: "Estado Premium: Ilimitado Activo",
+                msgFirst: "¡Oferta de bienvenida! Su primer pedido está estrictamente limitado a exactamente 1,000 unidades para validar el canal.",
+                msgPremium: "Configuración Premium desbloqueada. Ahora puede solicitar flujos de escalado ilimitados.",
+                lblService: "1. Seleccionar Canal KPI", lblTarget: "2. Enlace / URL de Destino", lblQty: "3. Cantidad Métrica",
+                btnDeploy: "Desplegar Vector de Crecimiento", panelHistory: "Registros Operativos", panelOrder: "Configurar Pedido",
+                thSrv: "Servicio", thVol: "Volumen", thTgt: "Enlace", thStat: "Estado"
+            }
+        };
+
+        // Simulated In-Memory Global Stateful Store
+        let state = {
+            currentLang: 'en',
+            currentAppView: 'auth', // 'auth', 'client', 'admin'
+            authIsSignup: false,
+            loggedInUser: null,
+            selectedService: 'views',
+            usersDatabase: {
+                'demo': { username: 'demo', ordersCount: 0 }
+            },
+            ordersDatabase: [
+                { user: 'system_test', service: 'likes', quantity: 1000, target: 'https://instagram.com/p/test', status: 'Delivered' },
+                { user: 'enterprise_user', service: 'views', quantity: 250000, target: 'https://youtube.com/watch?v=test', status: 'Processing' }
+            ]
+        };
+
+        // --- 2. THE ENGINE: LOGIC IMPLEMENTATION CONTROL ---
+        
+        function changeLanguage(langKey) {
+            state.currentLang = langKey;
+            const t = dictionary[langKey];
+            
+            // Map Static Content Elements
+            document.getElementById('lblUser').innerText = t.lblUser;
+            document.getElementById('lblPass').innerText = t.lblPass;
+            document.getElementById('lblEmail').innerText = t.lblEmail;
+            
+            // Sync current dynamic texts depending on secondary parameters
+            if(!state.authIsSignup) {
+                document.getElementById('authTitle').innerText = t.authTitleIn;
+                document.getElementById('btnSubmitAuth').innerText = t.btnLogin;
+                document.getElementById('authToggleText').innerHTML = t.toggleToUp;
+            } else {
+                document.getElementById('authTitle').innerText = t.authTitleUp;
+                document.getElementById('btnSubmitAuth').innerText = t.btnSignup;
+                document.getElementById('authToggleText').innerHTML = t.toggleToIn;
+            }
+
+            document.getElementById('panelOrderTitle').innerText = t.panelOrder;
+            document.getElementById('lblSelectService').innerText = t.lblService;
+            document.getElementById('lblTargetUrl').innerText = t.lblTarget;
+            document.getElementById('lblQuantity').innerText = t.lblQty;
+            document.getElementById('btnPlaceOrder').innerText = t.btnDeploy;
+            document.getElementById('panelHistoryTitle').innerText = t.panelHistory;
+            
+            document.getElementById('thService').innerText = t.thSrv;
+            document.getElementById('thQty').innerText = t.thVol;
+            document.getElementById('thTarget').innerText = t.thTgt;
+            document.getElementById('thStatus').innerText = t.thStat;
+
+            // Trigger dynamic re-renders of the state badges
+            evaluateUserOrderConstraints();
+        }
+
+        function toggleAuthFormMode() {
+            state.authIsSignup = !state.authIsSignup;
+            const emailGroup = document.getElementById('emailGroup');
+            emailGroup.style.display = state.authIsSignup ? 'block' : 'none';
+            changeLanguage(state.currentLang); // Refresh specific form strings
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById('authUsername').value.trim();
+            
+            if(!usernameInput) return;
+
+            // If new system registration, configure account matrix baseline
+            if(!state.usersDatabase[usernameInput]) {
+                state.usersDatabase[usernameInput] = {
+                    username: usernameInput,
+                    ordersCount: 0
+                };
+            }
+
+            state.loggedInUser = state.usersDatabase[usernameInput];
+            document.getElementById('logoutBtn').style.display = 'block';
+            
+            switchView('client');
+            evaluateUserOrderConstraints();
+            renderTables();
+        }
+
+        function logoutUser() {
+            state.loggedInUser = null;
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            switchView('auth');
+        }
+
+        function switchView(targetView) {
+            state.currentAppView = targetView;
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            
+            const btn = document.getElementById('roleToggleBtn');
+            if(targetView === 'admin') {
+                document.getElementById('adminView').classList.add('active');
+                btn.innerText = "Switch to Client Dashboard";
+            } else if (targetView === 'client') {
+                document.getElementById('clientView').classList.add('active');
+                btn.innerText = "Switch to Admin Panel";
+            } else {
+                document.getElementById('authView').classList.add('active');
+                btn.innerText = "Switch to Admin Panel";
+            }
+        }
+
+        function toggleRoleView() {
+            if(state.currentAppView === 'admin') {
+                if(state.loggedInUser) {
+                    switchView('client');
+                } else {
+                    switchView('auth');
+                }
+            } else {
+                switchView('admin');
+                renderTables();
+            }
+        }
+
+        function setServiceType(type, element) {
+            state.selectedService = type;
+            document.querySelectorAll('.service-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // --- THE ENGINE BUSINESS RULE GATE: 1K FIRST TIME VS UNLIMITED NEXT ---
+        function evaluateUserOrderConstraints() {
+            if(!state.loggedInUser) return;
+
+            const qtyField = document.getElementById('orderQuantity');
+            const tierBadge = document.getElementById('tierBadge');
+            const limitMsg = document.getElementById('limitMessage');
+            const currentOrdersCount = state.loggedInUser.ordersCount;
+            const t = dictionary[state.currentLang];
+
+            if(currentOrdersCount === 0) {
+                // Strict rule condition met: First time deployment is forced 1,000
+                qtyField.value = 1000;
+                qtyField.readOnly = true;
+                
+                tierBadge.className = "tier-badge badge-restricted";
+                tierBadge.innerText = t.badgeRestricted;
+                limitMsg.innerText = t.msgFirst;
+                limitMsg.style.borderLeftColor = "var(--warning)";
+            } else {
+                // Second execution onwards: Uncapped premium access enabled
+                if(qtyField.readOnly) {
+                    qtyField.value = 5000; // Provide standard default slider/input starting metric
+                    qtyField.readOnly = false;
+                }
+                
+                tierBadge.className = "tier-badge badge-unlimited";
+                tierBadge.innerText = t.badgeUnlimited;
+                limitMsg.innerText =  t.msgPremium;
+                limitMsg.style.borderLeftColor = "var(--success)";
+            }
+        }
+
+        function handleCreateOrder(e) {
+            e.preventDefault();
+            if(!state.loggedInUser) {
+                alert("Session integration terminated. Please login.");
+                switchView('auth');
+                return;
+            }
+
+            const targetRoute = document.getElementById('targetUrl').value;
+            const specifiedVolume = parseInt(document.getElementById('orderQuantity').value);
+
+            // Double security crosscheck validation rules logic
+            if(state.loggedInUser.ordersCount === 0 && specifiedVolume !== 1000) {
+                alert("Security policy violation: Introductory order restricted to exactly 1,000 units.");
+                return;
+            }
+
+            // Insert into global state log array mimicking datastore deployment
+            const newPayload = {
+                user: state.loggedInUser.username,
+                service: state.selectedService,
+                quantity: specifiedVolume,
+                target: targetRoute,
+                status: 'Processing'
+            };
+
+            state.ordersDatabase.push(newPayload);
+            
+            // Advance system validation count to instantly lift limits for second request
+            state.loggedInUser.ordersCount++;
+            
+            // Clear inputs & update interface
+            document.getElementById('targetUrl').value = '';
+            
+            evaluateUserOrderConstraints();
+            renderTables();
+            
+            alert("Infrastructure Vector Connected Successfully! Order Dispatched.");
+        }
+
+        function renderTables() {
+            // Client Filtered Matrix
+            const clientBody = document.getElementById('clientOrderHistoryTable');
+            clientBody.innerHTML = '';
+            
+            if(state.loggedInUser) {
+                const userFilteredOrders = state.ordersDatabase.filter(o => o.user === state.loggedInUser.username);
+                userFilteredOrders.reverse().forEach(o => {
+                    clientBody.innerHTML += `
+                        <tr>
+                            <td style="text-transform: capitalize;"><i class="fa-solid ${getServiceIcon(o.service)}"></i> ${o.service}</td>
+                            <td>${o.quantity.toLocaleString()}</td>
+                            <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.target}</td>
+                            <td><span class="badge-table" style="background:rgba(0, 242, 254, 0.15); color:var(--accent-glow);">${o.status}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Administrative Global Ledger Matrix
+            document.getElementById('statUsers').innerText = Object.keys(state.usersDatabase).length;
+            document.getElementById('statOrders').innerText = state.ordersDatabase.length;
+
+            const adminBody = document.getElementById('adminGlobalTable');
+            adminBody.innerHTML = '';
+            [...state.ordersDatabase].reverse().forEach(o => {
+                adminBody.innerHTML += `
+                    <tr>
+                        <td><strong>@${o.user}</strong></td>
+                        <td style="text-transform: capitalize;">${o.service}</td>
+                        <td>${o.quantity.toLocaleString()}</td>
+                        <td style="color:var(--text-muted); font-size:12px;">${o.target}</td>
+                        <td><span class="badge-table" style="background:rgba(0, 230, 118, 0.15); color:var(--success);">${o.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function getServiceIcon(srv) {
+            if(srv === 'views') return 'fa-eye';
+            if(srv === 'likes') return 'fa-heart';
+            if(srv === 'shares') return 'fa-share';
+            return 'fa-bookmark';
+        }
+
+        function resetGlobalMockData() {
+            // Hard clean deployment state counters for debug operations
+            state.ordersDatabase = [
+                { user: 'system_test', service: 'likes', quantity: 1000, target: 'https://instagram.com/p/test', status: 'Delivered' }
+            ];
+            Object.keys(state.usersDatabase).forEach(k => {
+                state.usersDatabase[k].ordersCount = 0;
+            });
+            if(state.loggedInUser) {
+                state.loggedInUser.ordersCount = 0;
+            }
+            evaluateUserOrderConstraints();
+            renderTables();
+            alert("Global data storage tables updated and reset.");
+        }
+
+        // Initialize application state view setup
+        changeLanguage('en');
+    </script>
+</body>
+</html>
